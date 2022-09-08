@@ -3,12 +3,16 @@ package telran.time.application;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.Month;
+import java.time.YearMonth;
 import java.time.format.TextStyle;
 import java.util.Locale;
 
 public class PrintCalendar {
 
 	public static void main(String[] args) {
+		DayOfWeek weekDay = DayOfWeek.valueOf("THURSDAY");
+		System.out.printf("%s\n",weekDay.getDisplayName(TextStyle.FULL,
+				Locale.forLanguageTag("ru")));
 		int monthYear[];
 		try {
 			monthYear = getMonthYear(args);
@@ -16,6 +20,7 @@ public class PrintCalendar {
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 		}
+		
 		
 
 	}
@@ -28,12 +33,43 @@ public class PrintCalendar {
 	}
 
 	private static void printDates(int month, int year) {
-		// TODO Auto-generated method stub
+		int column = getFirstColumn(month, year);
+		printOffset(column);
+		int nDays = getMonthDays(month, year);
+		int nWeekDays = DayOfWeek.values().length;
+		for(int day = 1; day <= nDays; day++) {
+			System.out.printf("%4d", day);
+			column++;
+			if(column == nWeekDays) {
+				column = 0; 
+				System.out.println();
+			}
+			
+		}
 		
+	}
+
+	private static int getMonthDays(int month, int year) {
+		YearMonth ym = YearMonth.of(year, month);
+				
+		return ym.lengthOfMonth();
+	}
+
+	private static void printOffset(int column) {
+		System.out.printf("%s", " ".repeat(column * 4));
+		
+	}
+
+	private static int getFirstColumn(int month, int year) {
+		LocalDate firstMonthDate = LocalDate.of(year, month, 1);
+		int weekDay = firstMonthDate.getDayOfWeek().getValue();
+		int firstWeekDay = DayOfWeek.values()[0].getValue();
+		return weekDay - firstWeekDay;
 	}
 
 	private static void printWeekDays() {
 		DayOfWeek dayWeeks[] = DayOfWeek.values();
+		System.out.print("  ");
 		for(DayOfWeek weekDay: dayWeeks) {
 			System.out.printf("%s ", weekDay.getDisplayName(TextStyle.SHORT, Locale.getDefault()));
 		}
