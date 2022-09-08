@@ -38,7 +38,9 @@ public class WorkingDaysAdjuster implements TemporalAdjuster {
 
 	@Override
 	public Temporal adjustInto(Temporal temporal) {
-
+		if(nDays < 0) {
+			throw new IllegalArgumentException("number of working days can not be negative");
+		}
 		int count = 0;
 		if (daysOff.length < DayOfWeek.values().length) {
 			while (count != nDays) {
